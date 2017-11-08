@@ -1,0 +1,83 @@
+<?php
+$Anrede = $_POST['Anrede'];                             // Anrede wird hier definiert
+$Name = $_POST['Name'];                    // Name wird hier definiert
+$Vorname = $_POST['Vorname'];                // Vorname wird hier definiert
+$Anstellung = $_POST['Anstellung'];            // Anstellung wird hier definiert
+$Stellenantritt = $_POST['Stellenantritt'];        // Stellenantritt wird hier definiert
+$Absender = $_POST['Absender'];                // Absender wird hier definiert
+$Nachricht = $_POST['Nachricht'];            // Nachricht wird hier definiert
+$Senden = $_POST['Senden'];                // Button 'Senden' wird hier definiert
+$Löschen = $_POST['Löschen'];                // Button 'Löschen' wird hier definiert
+function checkEmail( $Absender )             // E-Mail Überprufung 
+{ 
+    $nonascii      = "\x80-\xff";     
+    $nqtext        = "[^\\\\$nonascii\015\012\"]"; 
+    $qchar         = "\\\\[^$nonascii]"; 
+    $normuser      = '[a-zA-Z0-9][a-zA-Z0-9_.-]*'; 
+    $quotedstring  = "\"(?:$nqtext|$qchar)+\""; 
+    $user_part     = "(?:$normuser|$quotedstring)"; 
+    $dom_mainpart  = '[a-zA-Z0-9][a-zA-Z0-9._-]*\\.'; 
+    $dom_subpart   = '(?:[a-zA-Z0-9][a-zA-Z0-9._-]*\\.)*'; 
+    $dom_tldpart   = '[a-zA-Z]{2,5}'; 
+    $domain_part   = "$dom_subpart$dom_mainpart$dom_tldpart"; 
+    $pattern       = "$user_part\@$domain_part"; 
+     
+    if (!preg_match( "/$pattern$/", $Absender )) 
+    { 
+        return FALSE; 
+    } 
+    else 
+    { 
+        return TRUE; 
+    } 
+}
+if(isset($Senden)){                     // Überprüfung der MUSS - Felder
+
+  if ($Name == "") { 
+   echo"<script type=\"text/javascript\"> alert(\"Sie haben ihren Namen nicht angegeben!\");</script>"; 
+  } elseif ($Absender == "") { 
+    echo"<script type=\"text/javascript\"> alert(\"Sie haben ihre Email nicht angegeben!\");</script>"; 
+  } elseif ($Anstellung == "") { 
+    echo"<script type=\"text/javascript\"> alert(\"Sie haben keine Anstellung angegeben!\");</script>"; 
+  } elseif ($Nachricht == "") { 
+    echo"<script type=\"text/javascript\"> alert(\"Sie haben keine Nachricht angegeben!\");</script>";     
+  } elseif (!checkEmail( $_REQUEST['Absender'] )) { 
+    echo"<script type=\"text/javascript\"> alert(\"Die Email Adresse ist nicht gueltig!\");</script>"; 
+  } else { 
+   
+
+
+
+$datum = date("d.m.Y");                 // Aktuelles Datum und Zeit für E-Mail
+  $uhrzeit = date("H:i"); 
+  $datum=$datum ."-". $uhrzeit ."Uhr"; 
+   
+     
+    $ich = "etanushi@gmail.com";             // E-Mail Adresse
+  $betreffemail = "Bewerbung";            // Betreff von E-Mail
+  $Nachricht = " Bewerbung \n\n
+  Herr/Frau:                          ".$Anrede."
+  Vorname:                          ".$Vorname." 
+  Name:                               ".$Name."
+  Stelle als:                          ".$Anstellung."
+  ab Wann:                          ".$Stellenantritt."
+  E-Mail:                               ".$Absender."  
+  Nachricht:                          ".$Nachricht." 
+  gesendet am:                      ".$datum." 
+   
+  "; 
+  mail($ich, $betreffemail, $Nachricht, 
+  "From: $Name $Vorname <$Absender>"); 
+                   echo "Besten Dank für Ihre Bewerbung,";            // Text, der erscheint nach erfolgreichem Senden
+         echo " ";
+         print_r ($_POST['Vorname']);
+         echo " ";
+         print_r ($_POST['Name']);
+         echo ".";
+         echo "<br><br> Marcel Brunner wird sich so schnell wie möglich bei Ihnen melden.<br>";
+   
+echo"<script type=\"text/javascript\"> alert(\"Alles hat geklappt!\");</script>";         
+
+} 
+} 
+?>
